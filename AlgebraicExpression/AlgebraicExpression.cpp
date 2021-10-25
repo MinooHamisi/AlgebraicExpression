@@ -5,9 +5,9 @@
 #include <iostream>
 using namespace std;
 bool checkBalancedExp(char* c);
-int calculate(char* c);
+int calculate(string s);
 
-void infixToPostfix(string s);
+string infixToPostfix(string s);
 int prec(char c);
 //--------------------------------------------------
 int main()
@@ -15,11 +15,13 @@ int main()
 	cout << "please enter your algebric expression: \n";
 	char c[20];
 	cin >> c;
-	string st;
+	string st,postST;
 	st += c;
 	if (checkBalancedExp(c))
-		//cout << "= " << calculate(c)<<endl;
-		infixToPostfix(st);
+	{
+		postST+=infixToPostfix(st);
+		cout << "= " << calculate(postST) << endl;
+	}
 	return 0;
 }
 //---------------------------------------------------
@@ -43,7 +45,6 @@ bool checkBalancedExp(char* c)
 			else
 			{
 				if (c[i] == '-' || c[i] == '+' || c[i] == '*' || c[i] == '/' || c[i] == '%')
-					//if (!((c[i + 1] >= 48 && c[i + 1] <= 57) || (c[i + 1] >= 65 && c[i + 1] <= 90) || (c[i + 1] >= 97 && c[i + 1] <= 122) || c[i+1] == '(' || c[i+1] == '{' || c[i+1] == '['))
 					if(c[i+1] == ')' || c[i+1] == '}' || c[i+1] == ']')
 						b = false; // it is not a number or an alphabet
 						//Character A – Z : ASCII Value 65 – 90
@@ -64,29 +65,76 @@ bool checkBalancedExp(char* c)
 	}
 }
 //----------------------------------------
-int calculate(char* c)
+int calculate(string s)
 {
-	stack<int> SN;//stack number
-	stack<char> SO;//stack operation
+	stack<int> st;
+	int a,b;
 	int result=0;
-	for (int i = 0; c[i] != NULL;i++)
+	for (int i = 0; i< s.length();i++)
 	{
-		if (c[i] >= 48 && c[i] <= 57)// if it is a number
-			SN.push(c[i] - 48); //char is changed to an integer number => -48
-		else if (c[i] == '+' || c[i] == '-' || c[i] == '*' || c[i] == '/' || c[i] == '%' || c[i] == '^')
-			SO.push(c[i]);
-		//if
+		if (s[i] >= '0' && s[i] <= '9')
+			st.push(s[i]-48);
+		else
+		{
+			switch (s[i])
+			{
+			case '+':
+				a = st.pop();
+				b = st.pop();
+				result = b + a;
+				st.push(result);
+				cout << result << "\n";
+				break;
+			case '-':
+				a = st.pop();
+				b = st.pop();
+				result = b - a;
+				st.push(result);
+				cout << result << "\n";
+				break;
+			case '*':
+				a = st.pop();
+				b = st.pop();
+				result = b * a;
+				st.push(result);
+				cout << result << "\n";
+				break;
+			case '/':
+				a = st.pop();
+				b = st.pop();
+				result = b / a;
+				st.push(result);
+				cout << result << "\n";
+				break;
+			case '%':
+				a = st.pop();
+				b = st.pop();
+				result = b % a;
+				st.push(result);
+				cout << result << "\n";
+				break;
+			case '^':
+				a = st.pop();
+				b = st.pop();
+				result = b ^ a;
+				st.push(result);
+				cout << result << "\n";
+				break;
+			default:
+				break;
+			}
+		}
 	}
 	return result;
 }
 //-----------------------------------------
-
-void infixToPostfix(string s) 
+string infixToPostfix(string s) 
 {
-		stack<char> st; //For stack operations, we are using C++ built in stack
+		stack<char> st; 
 		string result;
 
-		for (int i = 0; i < s.length(); i++) {
+		for (int i = 0; i < s.length(); i++) 
+		{
 			char c = s[i];
 
 			// If the scanned character is
@@ -96,34 +144,38 @@ void infixToPostfix(string s)
 
 			// If the scanned character is an
 			// ‘(‘, push it to the stack.
-			else if (c == '(')
-				st.push('(');
-			else if (c == ')') 
+			else if (c == '('|| c == '['||c == '{')
+				st.push(c);
+			else if (c == ')'|| c == ']'|| c == '}')
 			{
-				while (!st.check('('))//top() != '(')
+				while (!st.closeCheck(c))//top() != '('
 				{
 					result += st.returnTop();
 					st.pop();
 				}
 				st.pop();
 			}
-
-			//If an operator is scanned
-			else {
-				while (!st.empty() && prec(s[i]) <= prec(st.returnTop())) {
+			else //If an operator is scanned
+			{
+				cout << st.empty() << " && " << prec(s[i]) << " <= " << prec(st.returnTop()) << "\n";
+				while (!st.empty() && prec(s[i]) <= prec(st.returnTop())) 
+				{
 					result += st.returnTop();
 					st.pop();
+					cout << "in the loop"<<st.empty() << " && " << prec(s[i]) << " <= " << prec(st.returnTop()) << "\n";
 				}
 				st.push(c);
 			}
 		}
 		// Pop all the remaining elements from the stack
-		while (!st.empty()) {
+		while (!st.empty()) 
+		{
 			result += st.returnTop();
 			st.pop();
 		}
 
 		cout << result << endl;
+		return result;
 }
 //------------------------------------------------
 int prec(char c) {
