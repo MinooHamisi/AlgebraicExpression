@@ -16,6 +16,7 @@ public:
 	bool full();
 	bool check(T element);
 	bool closeCheck(T element);
+	T returnTop();
 	int elementNumber();
 
 

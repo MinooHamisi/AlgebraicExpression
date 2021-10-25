@@ -8,20 +8,20 @@ stack<T>::stack(int max)
 	s = new T[max];
 	top = -1;
 }
-
+//----------------------------------------
 template<class T>
 stack<T>::~stack()
 {
 	delete s;
 }
-
+//----------------------------------------
 template<class T>
 void stack<T>::push(T c)
 {
 	top++;
 	s[top] = c;
 }
-
+//----------------------------------------
 template<class T>
 T stack<T>::pop()
 {
@@ -29,7 +29,7 @@ T stack<T>::pop()
 	--top;
 	return temp;
 }
-
+//----------------------------------------
 template<class T>
 bool stack<T>::empty()
 {
@@ -38,7 +38,7 @@ bool stack<T>::empty()
 	else
 		return false;
 }
-
+//----------------------------------------
 template<class T>
 bool stack<T>::full()
 {
@@ -47,7 +47,7 @@ bool stack<T>::full()
 	else
 		return false;
 }
-
+//----------------------------------------
 template<class T>
 bool stack<T>::check(T element)
 {
@@ -56,7 +56,7 @@ bool stack<T>::check(T element)
 	else
 		return false;
 }
-
+//----------------------------------------
 template<class T>
 bool stack<T>::closeCheck(T element)
 {
@@ -75,9 +75,17 @@ bool stack<T>::closeCheck(T element)
 		break;
 	}
 }
-
+//----------------------------------------
+template<class T>
+T stack<T>::returnTop()
+{
+	return this->s[top];
+}
+//----------------------------------------
 template<class T>
 int stack<T>::elementNumber()
 {
 	return top+1;
 }
+//----------------------------------------
+
